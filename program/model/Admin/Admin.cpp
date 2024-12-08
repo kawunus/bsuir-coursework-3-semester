@@ -58,25 +58,25 @@ void Admin::start() {
 
 void Admin::createStation() {
     std::string name, city;
-    std::cout << "Введите название станции: ";
+    std::cout << "Enter the station name: ";
     std::cin.ignore();
     std::getline(std::cin, name);
-    std::cout << "Введите город: ";
+    std::cout << "Enter the city: ";
     std::getline(std::cin, city);
 
     if (db.createLocation(name, city) == SQLITE_OK) {
-        std::cout << "Станция добавлена успешно.\n";
+        std::cout << "Station added successfully.\n";
     } else {
-        std::cout << "Ошибка при добавлении станции.\n";
+        std::cout << "Error adding the station.\n";
     }
 }
 
 void Admin::readStations() {
     std::vector<std::string> stations = db.readLocations();
     if (stations.empty()) {
-        std::cout << "Нет станций в базе данных.\n";
+        std::cout << "No stations in the database.\n";
     } else {
-        std::cout << "\nСтанции:\n";
+        std::cout << "\nStations:\n";
         for (const auto &station: stations) {
             std::cout << station << std::endl;
         }
@@ -86,15 +86,16 @@ void Admin::readStations() {
 void Admin::deleteStation() {
     readStations();
     int station_id;
-    std::cout << "Введите ID станции для удаления: ";
+    std::cout << "Enter the station ID to delete: ";
     std::cin >> station_id;
 
     if (db.deleteLocation(station_id) == SQLITE_OK) {
-        std::cout << "Станция удалена успешно.\n";
+        std::cout << "Station deleted successfully.\n";
     } else {
-        std::cout << "Ошибка при удалении станции.\n";
+        std::cout << "Error deleting the station.\n";
     }
 }
+
 
 void Admin::printStationsMenu() {
     std::cout << "1. Add a station\n";
@@ -127,38 +128,39 @@ void Admin::printStationsMenu() {
 
 void Admin::createTrain() {
     std::string train_number, type;
-    std::cout << "Введите номер поезда: ";
+    std::cout << "Enter the train number: ";
     std::cin.ignore();
     std::getline(std::cin, train_number);
-    std::cout << "Введите тип поезда: ";
+    std::cout << "Enter the train type: ";
     std::getline(std::cin, type);
 
     if (db.createTrain(train_number, type) == SQLITE_OK) {
-        std::cout << "Поезд добавлен успешно.\n";
+        std::cout << "Train added successfully.\n";
     } else {
-        std::cout << "Ошибка при добавлении поезда.\n";
+        std::cout << "Error adding the train.\n";
     }
 }
 
 void Admin::deleteTrain() {
     readTrains();
     int train_id;
-    std::cout << "Введите ID поезда для удаления: ";
+    std::cout << "Enter the train ID to delete: ";
     std::cin >> train_id;
 
     if (db.deleteTrain(train_id) == SQLITE_OK) {
-        std::cout << "Поезд удален успешно.\n";
+        std::cout << "Train deleted successfully.\n";
     } else {
-        std::cout << "Ошибка при удалении поезда.\n";
+        std::cout << "Error deleting the train.\n";
     }
 }
+
 
 void Admin::readTrains() {
     std::vector<std::string> trains = db.readTrains();
     if (trains.empty()) {
-        std::cout << "Нет поездов в базе данных.\n";
+        std::cout << "No trains in the database.\n";
     } else {
-        std::cout << "\nПоезда:\n";
+        std::cout << "\nTrains:\n";
         for (const auto &train: trains) {
             std::cout << train << std::endl;
         }
@@ -166,10 +168,10 @@ void Admin::readTrains() {
 }
 
 void Admin::printTrainsMenu() {
-    std::cout << "\n1. Добавить поезд\n";
-    std::cout << "2. Удалить поезд\n";
-    std::cout << "3. Просмотреть все поезда\n";
-    std::cout << "4. Выйти\n";
+    std::cout << "\n1. Add Train\n";
+    std::cout << "2. Delete Train\n";
+    std::cout << "3. View All Trains\n";
+    std::cout << "4. Exit\n";
 
     int command;
     cin >> command;
@@ -225,7 +227,7 @@ void Admin::createCarriage() {
     std::string type;
     std::cout << "Enter carriage number: ";
     std::cin >> number;
-    std::cout << "Enter carriage type (купе, плацкарт, СВ): ";
+    std::cout << "Enter carriage type (Compartment, Economy, Luxury): ";
     std::cin >> type;
 
     if (db.createCarriage(train_id, number, type) == SQLITE_OK) {
