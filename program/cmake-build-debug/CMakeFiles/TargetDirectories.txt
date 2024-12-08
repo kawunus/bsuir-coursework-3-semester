@@ -1,0 +1,3 @@
+/home/stanislau/bsuir-itas-stp-latex/program/cmake-build-debug/CMakeFiles/code.dir
+/home/stanislau/bsuir-itas-stp-latex/program/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/stanislau/bsuir-itas-stp-latex/program/cmake-build-debug/CMakeFiles/rebuild_cache.dir
