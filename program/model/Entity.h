@@ -11,7 +11,7 @@ class Entity {
 protected:
     bool isWork = true;
     Database db;
-    const std::string dbName = "/home/stanislau/bsuir-itas-stp-latex/program/station.db";
+    const std::string dbName = "/home/stanislau/bsuir-coursework-3-semester/program/station.db";
 
     void exit();
 };
