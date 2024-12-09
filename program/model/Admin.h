@@ -13,7 +13,7 @@ class Admin : public Entity {
 private:
     std::string name = "admin";
 
-    void printStationsMenu();
+    void printStationsMenu() override;
 
     void createStation();
 
@@ -39,7 +39,7 @@ private:
 
     // TODO: Зарефакторить!
 
-    void printPlacesMenu();
+    void printPlacesMenu() override;
 
     void readPlaces();
 
@@ -47,7 +47,7 @@ private:
 
     void deletePlace();
 
-    void updatePlaceStatus();
+    //void updatePlaceStatus();
 
     // TODO: Зарефакторить!
 
@@ -56,9 +56,13 @@ private:
     // TODO: Зарефакторить!
 
     void createTicketMenu();
+
     void readTicketsMenu();
+
     void deleteTicketMenu();
-    void printTicketsMenu();
+
+    void printTicketsMenu() override;
+
 public:
     void start();
 };

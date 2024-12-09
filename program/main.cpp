@@ -24,8 +24,8 @@ int main() {
         }
 
         case 2: {
-            User user;
-            user.start();
+            //User user;
+           // user.start();
             break;
         }
 
