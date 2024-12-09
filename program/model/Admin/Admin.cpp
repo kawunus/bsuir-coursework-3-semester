@@ -459,7 +459,9 @@ void Admin::printPlacesMenu() {
         pressToContinue();
         return;
     }
-
+    std::cout << "==========================" << std::endl;
+    std::cout << "     Choose the train,    " << std::endl;
+    std::cout << "    that interests you    " << std::endl;
     std::cout << "==========================" << std::endl;
     std::cout << "       TRAIN IDs          " << std::endl;
     std::cout << "==========================" << std::endl;
@@ -470,7 +472,7 @@ void Admin::printPlacesMenu() {
     int train_id;
     std::cout << "\nEnter train ID: ";
     std::cin >> train_id;
-
+    clearScreen();
     if (ranges::find(train_ids.begin(), train_ids.end(), train_id) == train_ids.end()) {
         std::cout << "Invalid train ID.\n";
         pressToContinue();
@@ -721,6 +723,7 @@ void Admin::printRoutesMenu() {
                 break;
             }
             case 0: {
+                clearScreen();
                 return;
             }
             default: {
@@ -760,6 +763,7 @@ void Admin::printTicketsMenu() {
                 deleteTicketMenu();
                 break;
             case 0:
+                clearScreen();
                 return;
             default: {
                 std::cout << "=============================" << std::endl;
@@ -834,6 +838,7 @@ void Admin::readTicketsMenu() {
     auto tickets = db.readTickets();
     if (tickets.empty()) {
         std::cout << "No tickets found.\n";
+        pressToContinue();
         return;
     }
 
@@ -841,6 +846,7 @@ void Admin::readTicketsMenu() {
     for (const auto &ticket: tickets) {
         std::cout << ticket << '\n';
     }
+    pressToContinue();
 }
 
 void Admin::deleteTicketMenu() {
@@ -857,6 +863,7 @@ void Admin::deleteTicketMenu() {
         std::cout << "Invalid input. Please enter a valid Ticket ID.\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        pressToContinue();
         return;
     }
 
@@ -865,4 +872,5 @@ void Admin::deleteTicketMenu() {
     } else {
         std::cout << "Failed to delete ticket.\n";
     }
+    pressToContinue();
 }
