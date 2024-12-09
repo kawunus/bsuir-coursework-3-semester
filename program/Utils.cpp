@@ -9,3 +9,13 @@ void handleInvalidInput() {
         std::cout << "Invalid input. Please try again!" << std::endl;
     }
 }
+
+void clearScreen() {
+    std::system("clear");
+}
+
+void pressToContinue() {
+    std::cout << "\nPress enter to continue...";
+    std::cin.get();
+    clearScreen();
+}

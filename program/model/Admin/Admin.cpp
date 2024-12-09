@@ -3,179 +3,286 @@
 #include "../../Utils.h"
 
 void Admin::start() {
-    cout << "Hi, " << name << "!" << std::endl;
+    std::cout << "Hi, " << name << "!" << std::endl;
+
     if (!db.openDatabase(dbName)) {
         std::cerr << "Failed to open the database. Terminating." << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
+    clearScreen();
+
     while (isWork) {
-        cout << "Menu:" << endl;
-        cout << "1. Trains info" << endl;
-        cout << "2. Carriages info" << endl;
-        cout << "3. Stations info" << endl;
-        cout << "4. Places info" << endl;
-        cout << "5. Routes info" << endl;
-        cout << "6. Tickets info" << endl;
-        cout << "0. Exit" << endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "         MAIN MENU        " << std::endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "1. Trains info" << std::endl;
+        std::cout << "2. Carriages info" << std::endl;
+        std::cout << "3. Stations info" << std::endl;
+        std::cout << "4. Places info" << std::endl;
+        std::cout << "5. Routes info" << std::endl;
+        std::cout << "6. Tickets info" << std::endl;
+        std::cout << "--------------------------" << std::endl;
+        std::cout << "0. Exit" << std::endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "Enter your choice: ";
 
         int command;
-        cin >> command;
+        std::cin >> command;
         handleInvalidInput();
+
         switch (command) {
-            case 1: {
+            case 1:
+                clearScreen();
+                std::cout << "\n===== TRAINS INFO =====\n" << std::endl;
                 printTrainsMenu();
                 break;
-            }
-            case 2: {
+
+            case 2:
+                clearScreen();
+                std::cout << "\n===== CARRIAGES INFO =====\n" << std::endl;
                 printCarriagesMenu();
                 break;
-            }
-            case 3: {
+
+            case 3:
+                clearScreen();
+                std::cout << "\n===== STATIONS INFO =====\n" << std::endl;
                 printStationsMenu();
                 break;
-            }
-            case 4: {
+
+            case 4:
+                clearScreen();
+                std::cout << "\n===== PLACES INFO =====\n" << std::endl;
                 printPlacesMenu();
                 break;
-            }
-            case 5: {
+
+            case 5:
+                clearScreen();
+                std::cout << "\n===== ROUTES INFO =====\n" << std::endl;
                 printRoutesMenu();
                 break;
-            }
-            case 6: {
+
+            case 6:
+                clearScreen();
+                std::cout << "\n===== TICKETS INFO =====\n" << std::endl;
                 printTicketsMenu();
                 break;
-            }
-            case 0: {
+
+            case 0:
+                clearScreen();
+                std::cout << "\nExiting... Goodbye!\n" << std::endl;
                 exit();
-            }
-            default: {
-            }
+                break;
+
+            default:
+                clearScreen();
+                std::cout << "\nInvalid choice. Please try again.\n" << std::endl;
+
+                pressToContinue();
+                break;
         }
     }
 }
 
 void Admin::createStation() {
+    clearScreen();
     std::string name, city;
+
+    std::cout << "==============================" << std::endl;
+    std::cout << "        CREATE STATION        " << std::endl;
+    std::cout << "==============================" << std::endl;
+
     std::cout << "Enter the station name: ";
     std::cin.ignore();
     std::getline(std::cin, name);
+
     std::cout << "Enter the city: ";
     std::getline(std::cin, city);
 
     if (db.createLocation(name, city) == SQLITE_OK) {
-        std::cout << "Station added successfully.\n";
+        std::cout << "\nStation added successfully.\n";
     } else {
-        std::cout << "Error adding the station.\n";
+        std::cerr << "\nError adding the station.\n";
     }
+
+    pressToContinue();
 }
 
 void Admin::readStations() {
+    clearScreen();
+
+    std::cout << "==============================" << std::endl;
+    std::cout << "         STATIONS LIST        " << std::endl;
+    std::cout << "==============================" << std::endl;
+
     std::vector<std::string> stations = db.readLocations();
+
     if (stations.empty()) {
-        std::cout << "No stations in the database.\n";
+        std::cout << "\nNo stations in the database.\n";
     } else {
         std::cout << "\nStations:\n";
         for (const auto &station: stations) {
-            std::cout << station << std::endl;
+            std::cout << " - " << station << std::endl;
         }
     }
+    std::cout << "==============================\n" << std::endl;
+
+    pressToContinue();
 }
 
 void Admin::deleteStation() {
+    clearScreen();
     readStations();
+
     int station_id;
+    std::cout << "===============================" << std::endl;
+    std::cout << "        DELETE STATION         " << std::endl;
+    std::cout << "===============================" << std::endl;
+
     std::cout << "Enter the station ID to delete: ";
     std::cin >> station_id;
 
     if (db.deleteLocation(station_id) == SQLITE_OK) {
-        std::cout << "Station deleted successfully.\n";
+        std::cout << "\nStation deleted successfully.\n";
     } else {
-        std::cout << "Error deleting the station.\n";
+        std::cout << "\nError deleting the station.\n";
     }
+
+    pressToContinue();
 }
 
-
 void Admin::printStationsMenu() {
-    std::cout << "1. Add a station\n";
-    std::cout << "2. Delete station\n";
-    std::cout << "3. View all stations\n";
-    std::cout << "0. Exit\n";
+    clearScreen();
+
+    std::cout << "===============================" << std::endl;
+    std::cout << "        STATIONS MENU          " << std::endl;
+    std::cout << "===============================" << std::endl;
+    std::cout << "1. Add a station" << std::endl;
+    std::cout << "2. Delete station" << std::endl;
+    std::cout << "3. View all stations" << std::endl;
+    std::cout << "0. Exit" << std::endl;
 
     int command;
-    cin >> command;
+    std::cout << "Enter your choice: ";
+    std::cin >> command;
     handleInvalidInput();
+
     switch (command) {
         case 1: {
+            clearScreen();
             createStation();
             break;
         }
         case 2: {
+            clearScreen();
             deleteStation();
             break;
         }
         case 3: {
+            clearScreen();
             readStations();
             break;
         }
-        case 0: { return; }
+        case 0: {
+            clearScreen();
+            return;
+        }
         default: {
+            clearScreen();
+            std::cout << "\nInvalid choice. Please try again.\n";
+            pressToContinue();
             break;
         }
     }
 }
 
 void Admin::createTrain() {
+    clearScreen();
+
     std::string train_number, type;
+    std::cout << "=============================" << std::endl;
+    std::cout << "        CREATE TRAIN         " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     std::cout << "Enter the train number: ";
     std::cin.ignore();
     std::getline(std::cin, train_number);
+
     std::cout << "Enter the train type: ";
     std::getline(std::cin, type);
 
     if (db.createTrain(train_number, type) == SQLITE_OK) {
-        std::cout << "Train added successfully.\n";
+        std::cout << "\nTrain added successfully.\n";
     } else {
-        std::cout << "Error adding the train.\n";
+        std::cout << "\nError adding the train.\n";
     }
+
+    pressToContinue();
 }
 
 void Admin::deleteTrain() {
+    clearScreen();
+
     readTrains();
     int train_id;
+    std::cout << "=============================" << std::endl;
+    std::cout << "        DELETE TRAIN         " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     std::cout << "Enter the train ID to delete: ";
     std::cin >> train_id;
 
     if (db.deleteTrain(train_id) == SQLITE_OK) {
-        std::cout << "Train deleted successfully.\n";
+        std::cout << "\nTrain deleted successfully.\n";
     } else {
-        std::cout << "Error deleting the train.\n";
+        std::cout << "\nError deleting the train.\n";
     }
+
+    pressToContinue();
 }
 
 
 void Admin::readTrains() {
+    clearScreen();
+
     std::vector<std::string> trains = db.readTrains();
+
+    std::cout << "=============================" << std::endl;
+    std::cout << "         TRAINS LIST         " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     if (trains.empty()) {
-        std::cout << "No trains in the database.\n";
+        std::cout << "\nNo trains in the database.\n";
     } else {
         std::cout << "\nTrains:\n";
         for (const auto &train: trains) {
-            std::cout << train << std::endl;
+            std::cout << " - " << train << std::endl;
         }
     }
+    std::cout << "=============================\n" << std::endl;
+
+
+    pressToContinue();
 }
 
 void Admin::printTrainsMenu() {
-    std::cout << "\n1. Add Train\n";
-    std::cout << "2. Delete Train\n";
-    std::cout << "3. View All Trains\n";
-    std::cout << "4. Exit\n";
+    clearScreen();
+
+    std::cout << "=============================" << std::endl;
+    std::cout << "         TRAIN MENU          " << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "1. Add Train                " << std::endl;
+    std::cout << "2. Delete Train             " << std::endl;
+    std::cout << "3. View All Trains          " << std::endl;
+    std::cout << "-----------------------------" << std::endl;
+    std::cout << "0. Exit                     " << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "Enter your choice: ";
 
     int command;
-    cin >> command;
+    std::cin >> command;
     handleInvalidInput();
+    std::cin.ignore();
     switch (command) {
         case 1: {
             createTrain();
@@ -189,19 +296,32 @@ void Admin::printTrainsMenu() {
             readTrains();
             break;
         }
-        case 0: { return; }
+        case 0: {
+            clearScreen();
+            return;
+        }
         default: {
+            clearScreen();
+            std::cout << "\nInvalid choice. Please try again.\n";
+
+            pressToContinue();
             break;
         }
     }
 }
 
 void Admin::createCarriage() {
-    std::cout << "Choose train ID: " << endl;
+    clearScreen();
+
+    std::cout << "===============================" << std::endl;
+    std::cout << "        CREATE CARRIAGE       " << std::endl;
+    std::cout << "===============================" << std::endl;
+
+    std::cout << "Choose train ID: " << std::endl;
     std::vector<int> train_ids = db.getTrainIds();
     if (train_ids.empty()) {
         std::cout << "No trains available.\n";
-        return;;
+        return;
     }
 
     for (int id: train_ids) {
@@ -217,7 +337,7 @@ void Admin::createCarriage() {
         return;
     }
 
-    auto it = ranges::find(train_ids.begin(), train_ids.end(), train_id);
+    auto it = std::find(train_ids.begin(), train_ids.end(), train_id);
     if (it == train_ids.end()) {
         std::cout << "Invalid train ID.\n";
         return;
@@ -231,45 +351,76 @@ void Admin::createCarriage() {
     std::cin >> type;
 
     if (db.createCarriage(train_id, number, type) == SQLITE_OK) {
-        std::cout << "Carriage added successfully.\n";
+        std::cout << "\nCarriage added successfully.\n";
     } else {
-        std::cout << "Error adding carriage.\n";
+        std::cout << "\nError adding carriage.\n";
     }
+
+
+    pressToContinue();
 }
 
 void Admin::deleteCarriage() {
+    clearScreen();
+
     int carriage_id;
+    std::cout << "===============================" << std::endl;
+    std::cout << "        DELETE CARRIAGE       " << std::endl;
+    std::cout << "===============================" << std::endl;
+
     std::cout << "Enter carriage ID to delete: ";
     std::cin >> carriage_id;
 
     if (db.deleteCarriage(carriage_id) == SQLITE_OK) {
-        std::cout << "Carriage deleted successfully.\n";
+        std::cout << "\nCarriage deleted successfully.\n";
     } else {
-        std::cout << "Error deleting carriage.\n";
+        std::cout << "\nError deleting carriage.\n";
     }
+
+
+    pressToContinue();
 }
 
 void Admin::readCarriages() {
+    clearScreen();
+
     std::vector<std::string> carriages = db.readCarriages();
+
+    std::cout << "===============================" << std::endl;
+    std::cout << "        CARRIAGES LIST        " << std::endl;
+    std::cout << "===============================" << std::endl;
+
     if (carriages.empty()) {
-        std::cout << "No carriages available.\n";
+        std::cout << "\nNo carriages available.\n";
     } else {
         std::cout << "\nCarriages:\n";
         for (const auto &carriage: carriages) {
-            std::cout << carriage << std::endl;
+            std::cout << " - " << carriage << std::endl;
         }
     }
+
+    std::cout << "===============================" << std::endl;
+
+    pressToContinue();
 }
 
 void Admin::printCarriagesMenu() {
-    std::cout << "\n1. Add carriage\n";
-    std::cout << "2. Delete carriage\n";
-    std::cout << "3. View all carriages\n";
-    std::cout << "4. Exit\n";
+    clearScreen();
+
+    std::cout << "===============================" << std::endl;
+    std::cout << "       CARRIAGES MENU         " << std::endl;
+    std::cout << "===============================" << std::endl;
+    std::cout << "1. Add carriage               " << std::endl;
+    std::cout << "2. Delete carriage            " << std::endl;
+    std::cout << "3. View all carriages         " << std::endl;
+    std::cout << "4. Exit                       " << std::endl;
+    std::cout << "===============================" << std::endl;
+    std::cout << "Enter your choice: ";
 
     int command;
-    cin >> command;
+    std::cin >> command;
     handleInvalidInput();
+    std::cin.ignore();
     switch (command) {
         case 1: {
             createCarriage();
@@ -283,8 +434,13 @@ void Admin::printCarriagesMenu() {
             readCarriages();
             break;
         }
-        case 0: { return; }
+        case 4: {
+            return;
+        }
         default: {
+            clearScreen();
+            std::cout << "\nInvalid choice. Please try again.\n";
+            pressToContinue();
             break;
         }
     }
@@ -293,116 +449,173 @@ void Admin::printCarriagesMenu() {
 
 // TODO: Зарефакторить
 void Admin::printPlacesMenu() {
+    clearScreen();
+
     auto train_ids = db.getTrainIds();
     if (train_ids.empty()) {
-        std::cout << "No trains available.\n";
+        std::cout << "==========================" << std::endl;
+        std::cout << "     No trains available  " << std::endl;
+        std::cout << "==========================" << std::endl;
+        pressToContinue();
         return;
     }
 
+    std::cout << "==========================" << std::endl;
+    std::cout << "       TRAIN IDs          " << std::endl;
+    std::cout << "==========================" << std::endl;
     for (int id: train_ids) {
         std::cout << "Train ID: " << id << std::endl;
     }
 
     int train_id;
-    std::cout << "Enter train ID: ";
+    std::cout << "\nEnter train ID: ";
     std::cin >> train_id;
 
     if (ranges::find(train_ids.begin(), train_ids.end(), train_id) == train_ids.end()) {
         std::cout << "Invalid train ID.\n";
+        pressToContinue();
         return;
     }
 
     auto carriage_ids = db.getCarriageIds(train_id);
     if (carriage_ids.empty()) {
-        std::cout << "No carriages available for this train.\n";
+        std::cout << "==========================" << std::endl;
+        std::cout << " No carriages available   " << std::endl;
+        std::cout << "==========================" << std::endl;
+        pressToContinue();
         return;
     }
 
+    std::cout << "==========================" << std::endl;
+    std::cout << "       CARRIAGE IDs       " << std::endl;
+    std::cout << "==========================" << std::endl;
     for (int id: carriage_ids) {
         std::cout << "Carriage ID: " << id << std::endl;
     }
 
     int carriage_id;
-    std::cout << "Enter carriage ID: ";
+    std::cout << "\nEnter carriage ID: ";
     std::cin >> carriage_id;
 
     if (ranges::find(carriage_ids.begin(), carriage_ids.end(), carriage_id) == carriage_ids.end()) {
         std::cout << "Invalid carriage ID.\n";
+        pressToContinue();
         return;
     }
 
     while (true) {
-        std::cout << "1. View places\n2. Create place\n3. Delete place\n4. Change status\n5. Exit\nChoose an option: ";
+        clearScreen();
+        std::cout << "==========================" << std::endl;
+        std::cout << "       PLACES MENU        " << std::endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "1. View places            " << std::endl;
+        std::cout << "2. Create place           " << std::endl;
+        std::cout << "3. Delete place           " << std::endl;
+        std::cout << "4. Change place status    " << std::endl;
+        std::cout << "5. Exit                   " << std::endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "Choose an option: ";
+
         int option;
         std::cin >> option;
-
-        if (option == 1) {
-            auto places = db.readPlaces(carriage_id);
-            if (places.empty()) {
-                std::cout << "No places available.\n";
-            } else {
-                for (const auto &place: places) {
-                    std::cout << place << std::endl;
+        handleInvalidInput();
+        std::cin.ignore();
+        switch (option) {
+            case 1: {
+                auto places = db.readPlaces(carriage_id);
+                if (places.empty()) {
+                    std::cout << "No places available.\n";
+                } else {
+                    for (const auto &place: places) {
+                        std::cout << place << std::endl;
+                    }
                 }
+                pressToContinue();
+                break;
             }
-        } else if (option == 2) {
-            int number;
-            std::cout << "Enter place number: ";
-            std::cin >> number;
-            if (db.createPlace(carriage_id, number, "0") == SQLITE_OK) {
-                std::cout << "Place created successfully.\n";
-            } else {
-                std::cout << "Error creating place.\n";
+            case 2: {
+                int number;
+                std::cout << "Enter place number: ";
+                std::cin >> number;
+                if (db.createPlace(carriage_id, number, "0") == SQLITE_OK) {
+                    std::cout << "Place created successfully.\n";
+                } else {
+                    std::cout << "Error creating place.\n";
+                }
+                pressToContinue();
+                break;
             }
-        } else if (option == 3) {
-            int place_id;
-            std::cout << "Enter place ID to delete: ";
-            std::cin >> place_id;
-            if (db.deletePlace(place_id) == SQLITE_OK) {
-                std::cout << "Place deleted successfully.\n";
-            } else {
-                std::cout << "Error deleting place.\n";
+            case 3: {
+                int place_id;
+                std::cout << "Enter place ID to delete: ";
+                std::cin >> place_id;
+                if (db.deletePlace(place_id) == SQLITE_OK) {
+                    std::cout << "Place deleted successfully.\n";
+                } else {
+                    std::cout << "Error deleting place.\n";
+                }
+                pressToContinue();
+                break;
             }
-        } else if (option == 4) {
-            int place_id;
-            std::cout << "Enter place ID: ";
-            std::cin >> place_id;
-            if (db.updatePlaceStatus(place_id, "1") == SQLITE_OK) {
-                std::cout << "Place status updated successfully.\n";
-            } else {
-                std::cout << "Error updating place status.\n";
+            case 4: {
+                int place_id;
+                std::cout << "Enter place ID: ";
+                std::cin >> place_id;
+                if (db.updatePlaceStatus(place_id, "1") == SQLITE_OK) {
+                    std::cout << "Place status updated successfully.\n";
+                } else {
+                    std::cout << "Error updating place status.\n";
+                }
+                pressToContinue();
+                break;
             }
-        } else if (option == 5) {
-            break;
-        } else {
-            std::cout << "Invalid option.\n";
+            case 5: {
+                clearScreen();
+                return;
+            }
+            default: {
+                std::cout << "Invalid option. Please try again.\n";
+                pressToContinue();
+                break;
+            }
         }
     }
 }
 
 void Admin::printRoutesMenu() {
     while (true) {
-        std::cout << "\n--- Manage Routes ---\n";
-        std::cout << "1. Create Route\n";
-        std::cout << "2. Delete Route\n";
-        std::cout << "3. View Routes\n";
-        std::cout << "0. Back\n";
+        clearScreen();
+        std::cout << "===========================" << std::endl;
+        std::cout << "     Manage Routes         " << std::endl;
+        std::cout << "===========================" << std::endl;
+        std::cout << "1. Create Route           " << std::endl;
+        std::cout << "2. Delete Route           " << std::endl;
+        std::cout << "3. View Routes            " << std::endl;
+        std::cout << "0. Back                   " << std::endl;
+        std::cout << "===========================" << std::endl;
         std::cout << "Enter your choice: ";
 
         int choice;
         std::cin >> choice;
-
+        handleInvalidInput();
+        std::cin.ignore();
         switch (choice) {
             case 1: {
                 std::vector<std::string> trains = db.readTrains();
                 if (trains.empty()) {
-                    std::cout << "No trains available. Create a train first.\n";
+                    std::cout << "===========================" << std::endl;
+                    std::cout << " No trains available.     " << std::endl;
+                    std::cout << "===========================" << std::endl;
+                    pressToContinue();
                     break;
                 }
 
                 std::vector<std::string> stations = db.readLocations();
                 if (stations.empty()) {
-                    std::cout << "No stations available. Create stations first.\n";
+                    std::cout << "===========================" << std::endl;
+                    std::cout << " No stations available.   " << std::endl;
+                    std::cout << "===========================" << std::endl;
+                    pressToContinue();
                     break;
                 }
 
@@ -423,6 +636,7 @@ void Admin::printRoutesMenu() {
                 std::cin >> train_id;
                 if (!db.trainExists(train_id)) {
                     std::cout << "Invalid Train ID. Try again.\n";
+                    pressToContinue();
                     break;
                 }
 
@@ -430,6 +644,7 @@ void Admin::printRoutesMenu() {
                 std::cin >> start_station_id;
                 if (!db.stationExists(start_station_id)) {
                     std::cout << "Invalid Start Station ID. Try again.\n";
+                    pressToContinue();
                     break;
                 }
 
@@ -437,22 +652,24 @@ void Admin::printRoutesMenu() {
                 std::cin >> end_station_id;
                 if (!db.stationExists(end_station_id)) {
                     std::cout << "Invalid End Station ID. Try again.\n";
+                    pressToContinue();
                     break;
                 }
 
                 if (start_station_id == end_station_id) {
                     std::cout << "Start and End stations must be different. Try again.\n";
+                    pressToContinue();
                     break;
                 }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Enter Departure Time (YYYY-MM-DD HH:MM): ";
                 std::getline(std::cin, departure_time);
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Enter Arrival Time (YYYY-MM-DD HH:MM): ";
                 std::getline(std::cin, arrival_time);
 
                 if (departure_time >= arrival_time) {
                     std::cout << "Departure time must be earlier than arrival time. Try again.\n";
+                    pressToContinue();
                     break;
                 }
 
@@ -462,49 +679,76 @@ void Admin::printRoutesMenu() {
                 } else {
                     std::cout << "Failed to create route.\n";
                 }
+                pressToContinue();
                 break;
             }
             case 2: {
-                db.readRoutes();
-                int route_id;
+                std::vector<std::string> routes = db.readRoutes();
+                if (routes.empty()) {
+                    std::cout << "===========================" << std::endl;
+                    std::cout << " No routes found.         " << std::endl;
+                    std::cout << "===========================" << std::endl;
+                    pressToContinue();
+                    break;
+                }
                 std::cout << "Enter Route ID to delete: ";
+                int route_id;
                 std::cin >> route_id;
 
                 if (db.deleteRoute(route_id) == SQLITE_OK) {
                     std::cout << "Route deleted successfully.\n";
+                } else {
+                    std::cout << "Error deleting route.\n";
                 }
+                pressToContinue();
                 break;
             }
             case 3: {
                 std::vector<std::string> routes = db.readRoutes();
                 if (routes.empty()) {
-                    std::cout << "No routes found.\n";
+                    std::cout << "===========================" << std::endl;
+                    std::cout << " No routes found.         " << std::endl;
+                    std::cout << "===========================" << std::endl;
                 } else {
+                    std::cout << "===========================" << std::endl;
+                    std::cout << " Available Routes:        " << std::endl;
+                    std::cout << "===========================" << std::endl;
                     for (const auto &route: routes) {
                         std::cout << route << "\n";
                     }
                 }
+                pressToContinue();
                 break;
             }
-            case 0:
+            case 0: {
                 return;
-            default:
+            }
+            default: {
                 std::cout << "Invalid choice. Try again.\n";
+                pressToContinue();
+                break;
+            }
         }
     }
 }
 
 void Admin::printTicketsMenu() {
     while (true) {
-        std::cout << "\nTicket Management Menu:\n";
-        std::cout << "1. Create Ticket\n";
-        std::cout << "2. View Tickets\n";
-        std::cout << "3. Delete Ticket\n";
-        std::cout << "0. Back to Main Menu\n";
+        clearScreen();
+        std::cout << "=============================" << std::endl;
+        std::cout << "     Ticket Management       " << std::endl;
+        std::cout << "=============================" << std::endl;
+        std::cout << "1. Create Ticket            " << std::endl;
+        std::cout << "2. View Tickets             " << std::endl;
+        std::cout << "3. Delete Ticket            " << std::endl;
+        std::cout << "0. Back to Main Menu        " << std::endl;
+        std::cout << "=============================" << std::endl;
         std::cout << "Enter your choice: ";
+
         int choice;
         std::cin >> choice;
-
+        handleInvalidInput();
+        std::cin.ignore();
         switch (choice) {
             case 1:
                 createTicketMenu();
@@ -517,15 +761,30 @@ void Admin::printTicketsMenu() {
                 break;
             case 0:
                 return;
-            default:
-                std::cout << "Invalid choice. Try again.\n";
+            default: {
+                std::cout << "=============================" << std::endl;
+                std::cout << " Invalid choice. Try again. " << std::endl;
+                std::cout << "=============================" << std::endl;
+                pressToContinue();
+                break;
+            }
         }
     }
 }
 
 void Admin::createTicketMenu() {
+    clearScreen();
+    std::cout << "=============================" << std::endl;
+    std::cout << "      Create Ticket          " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     std::cout << "Available Routes:\n";
     auto routes = db.getRoutes();
+    if (routes.empty()) {
+        std::cout << "No available routes.\n";
+        return;
+    }
+
     for (const auto &route: routes) {
         std::cout << route << '\n';
     }
@@ -537,6 +796,7 @@ void Admin::createTicketMenu() {
     auto places = db.getAvailablePlaces(route_id);
     if (places.empty()) {
         std::cout << "No available places for this route.\n";
+        pressToContinue();
         return;
     }
 
@@ -566,20 +826,39 @@ void Admin::createTicketMenu() {
 }
 
 void Admin::readTicketsMenu() {
+    clearScreen();
+    std::cout << "=============================" << std::endl;
+    std::cout << "      View Tickets           " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     auto tickets = db.readTickets();
     if (tickets.empty()) {
         std::cout << "No tickets found.\n";
         return;
     }
+
+    std::cout << "Tickets:\n";
     for (const auto &ticket: tickets) {
         std::cout << ticket << '\n';
     }
 }
 
 void Admin::deleteTicketMenu() {
+    clearScreen();
+    std::cout << "=============================" << std::endl;
+    std::cout << "      Delete Ticket          " << std::endl;
+    std::cout << "=============================" << std::endl;
+
     int ticket_id;
     std::cout << "Enter Ticket ID to delete: ";
     std::cin >> ticket_id;
+
+    if (std::cin.fail()) {
+        std::cout << "Invalid input. Please enter a valid Ticket ID.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
 
     if (db.deleteTicket(ticket_id) == SQLITE_OK) {
         std::cout << "Ticket deleted successfully.\n";
