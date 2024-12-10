@@ -41,6 +41,16 @@ void User::start() {
                 createTicketMenu();
                 break;
             }
+
+            case 3: {
+                deleteTicketMenu();
+                break;
+            }
+            default: {
+                std::cout << "Invalid choice." << std::endl;
+                pressToContinue();
+                break;
+            }
         }
     }
 }
@@ -82,30 +92,73 @@ void User::createTicketMenu() {
     std::cout << "Enter Place ID: ";
     std::cin >> place_id;
 
-    auto passengers = db.readAllPassengers();
-    if (passengers.empty()) {
-        std::cout << "No passengers found.\n";
-        pressToContinue();
-        return;
-    }
-
-    std::cout << "Available Passengers:\n";
-    for (const auto &passenger: passengers) {
-        std::cout << passenger << '\n';
-    }
-
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 
     if (db.createTicket(place_id, route_id, userId, getCurrentTime()) == SQLITE_OK) {
         std::cout << "Ticket created successfully.\n";
+        pressToContinue();
     } else {
         std::cout << "Failed to create ticket.\n";
+        pressToContinue();
     }
 }
 
 void User::deleteTicketMenu() {
+    clearScreen();
+    std::cout << "=============================" << std::endl;
+    std::cout << "      Delete Ticket          " << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    std::cout << "Your Tickets:\n";
+    auto tickets = db.getTicketsByUserId(userId);
+    if (tickets.empty()) {
+        std::cout << "You have no tickets.\n";
+        pressToContinue();
+        return;
+    }
+
+    for (const auto &ticket: tickets) {
+        std::cout << "Ticket ID: " << std::get<0>(ticket)
+                << ", Route: " << std::get<1>(ticket)
+                << ", Place: " << std::get<2>(ticket)
+                << ", Purchase Time: " << std::get<3>(ticket) << '\n';
+    }
+
+    int ticket_id;
+    std::cout << "Enter Ticket ID to delete: ";
+    std::cin >> ticket_id;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    if (std::cin.fail()) {
+        std::cout << "Invalid input. Please enter a valid Ticket ID.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        pressToContinue();
+        return;
+    }
+
+    bool ticketFound = false;
+    for (const auto &ticket: tickets) {
+        if (std::get<0>(ticket) == ticket_id) {
+            ticketFound = true;
+            break;
+        }
+    }
+    if (!ticketFound) {
+        std::cout << "You cannot delete a ticket that does not belong to you.\n";
+        pressToContinue();
+        return;
+    }
+
+    if (db.deleteTicket(ticket_id) == SQLITE_OK) {
+        std::cout << "Ticket deleted successfully.\n";
+    } else {
+        std::cout << "Failed to delete ticket.\n";
+    }
+
+    pressToContinue();
 }
 
 void User::printPlacesMenu() {

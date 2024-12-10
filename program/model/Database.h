@@ -90,6 +90,8 @@ public:
     std::vector<std::string> readAllPassengers();
 
     int getUserIdByEmail(const std::string &email);
+
+    std::vector<std::tuple<int, int, int, std::string> > getTicketsByUserId(int userId);
 };
 
 #endif // DATABASE_H

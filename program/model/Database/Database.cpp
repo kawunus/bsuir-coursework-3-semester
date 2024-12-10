@@ -600,3 +600,34 @@ std::vector<std::string> Database::readAllPassengers() {
     sqlite3_finalize(stmt);
     return passengers;
 }
+
+std::vector<std::tuple<int, int, int, std::string>> Database::getTicketsByUserId(int userId) {
+    sqlite3_stmt *stmt;
+    std::string query = R"(
+        SELECT tickets.ticket_id, tickets.route_id, tickets.place_id, tickets.purchase_time
+        FROM tickets
+        WHERE tickets.passenger_id = ?;
+    )";
+
+    std::vector<std::tuple<int, int, int, std::string>> tickets;
+
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return tickets;
+    }
+
+    sqlite3_bind_int(stmt, 1, userId);
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int ticketId = sqlite3_column_int(stmt, 0);
+        int routeId = sqlite3_column_int(stmt, 1);
+        int placeId = sqlite3_column_int(stmt, 2);
+        std::string purchaseTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+
+        tickets.emplace_back(ticketId, routeId, placeId, purchaseTime);
+    }
+
+    sqlite3_finalize(stmt);
+
+    return tickets;
+}
