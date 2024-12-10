@@ -2,6 +2,7 @@
 
 #include "../Admin.h"
 #include "../../Utils.h"
+#include "../User.h"
 
 void System::exit() {
     std::cout << "Exiting the program..." << std::endl;
@@ -46,7 +47,8 @@ int System::login() {
                         Admin admin(db.getUserNameByEmail(email), userId);
                         admin.start();
                     } else {
-                        // TODO: USER
+                        User user(db.getUserNameByEmail(email), userId);
+                        user.start();
                     }
 
                     return userId;
@@ -77,7 +79,8 @@ int System::login() {
 
                     pressToContinue();
 
-                    // TODO: USER
+                    User user(db.getUserNameByEmail(email), db.getUserIdByEmail(email));
+                    user.start();
                 } else {
                     clearScreen();
                     std::cout << "Registration failed. Email might already be in use." << std::endl;

@@ -12,8 +12,7 @@
 class Admin : public Entity {
 private:
 
-    std::string name;
-    int userId;
+
 
     void printStationsMenu() override;
 
@@ -49,11 +48,11 @@ private:
 
     // TODO: Зарефакторить!
 
-    void createTicketMenu();
+    void createTicketMenu() override;
 
-    void readTicketsMenu();
+    void readTicketsMenu() override;
 
-    void deleteTicketMenu();
+    void deleteTicketMenu() override;
 
     void printTicketsMenu() override;
 

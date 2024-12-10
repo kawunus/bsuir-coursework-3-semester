@@ -820,16 +820,29 @@ void Admin::createTicketMenu() {
     std::cout << "Enter Place ID: ";
     std::cin >> place_id;
 
+    auto passengers = db.readAllPassengers();
+    if (passengers.empty()) {
+        std::cout << "No passengers found.\n";
+        pressToContinue();
+        return;
+    }
+
+    std::cout << "Available Passengers:\n";
+    for (const auto &passenger : passengers) {
+        std::cout << passenger << '\n';
+    }
+
+    int passenger_id;
+    std::cout << "Enter Passenger ID: ";
+    std::cin >> passenger_id;
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::string passenger_name;
-    std::cout << "Enter Passenger Name: ";
-    std::getline(std::cin, passenger_name);
 
     std::string purchase_time;
     std::cout << "Enter Purchase Time (YYYY-MM-DD HH:MM): ";
     std::getline(std::cin, purchase_time);
 
-    if (db.createTicket(place_id, route_id, passenger_name, purchase_time) == SQLITE_OK) {
+    if (db.createTicket(place_id, route_id, passenger_id, purchase_time) == SQLITE_OK) {
         std::cout << "Ticket created successfully.\n";
     } else {
         std::cout << "Failed to create ticket.\n";

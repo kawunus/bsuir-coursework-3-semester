@@ -86,6 +86,10 @@ public:
     std::string getUserNameByEmail(const std::string &email);
 
     std::string getPassengerName(int passenger_id);
+
+    std::vector<std::string> readAllPassengers();
+
+    int getUserIdByEmail(const std::string &email);
 };
 
 #endif // DATABASE_H

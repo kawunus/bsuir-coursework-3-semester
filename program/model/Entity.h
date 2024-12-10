@@ -11,6 +11,9 @@ class Entity {
 public:
     virtual ~Entity() = default;
 
+    std::string name;
+    int userId;
+
 protected:
     bool isWork = true;
     Database db;
@@ -25,6 +28,12 @@ protected:
     //virtual void updatePlaceStatus() =0;
 
     virtual void printTicketsMenu() = 0;
+
+    virtual void createTicketMenu() = 0;
+
+    virtual void readTicketsMenu() = 0;
+
+    virtual void deleteTicketMenu() = 0;
 };
 
 #endif // ENTITY_H

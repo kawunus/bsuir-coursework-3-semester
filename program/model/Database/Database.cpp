@@ -479,8 +479,8 @@ bool Database::registerUser(const std::string &name, const std::string &email, c
     return true;
 }
 
-bool Database::isAdmin(const std::string& email) {
-    sqlite3_stmt* stmt;
+bool Database::isAdmin(const std::string &email) {
+    sqlite3_stmt *stmt;
     std::string query = "SELECT is_admin FROM entities WHERE email = ?;";
 
     if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -499,8 +499,8 @@ bool Database::isAdmin(const std::string& email) {
     return is_admin;
 }
 
-bool Database::getUserByEmail(const std::string& email) {
-    sqlite3_stmt* stmt;
+bool Database::getUserByEmail(const std::string &email) {
+    sqlite3_stmt *stmt;
     std::string query = "SELECT entity_id, name, email, is_admin FROM entities WHERE email = ?;";
 
     if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -514,8 +514,8 @@ bool Database::getUserByEmail(const std::string& email) {
     if (sqlite3_step(stmt) == SQLITE_ROW) {
         user_found = true;
         int entity_id = sqlite3_column_int(stmt, 0);
-        std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        std::string user_email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        std::string name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        std::string user_email = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
         bool is_admin = sqlite3_column_int(stmt, 3) == 1;
     }
 
@@ -523,8 +523,8 @@ bool Database::getUserByEmail(const std::string& email) {
     return user_found;
 }
 
-std::string Database::getUserNameByEmail(const std::string& email) {
-    sqlite3_stmt* stmt;
+std::string Database::getUserNameByEmail(const std::string &email) {
+    sqlite3_stmt *stmt;
     std::string query = "SELECT name FROM entities WHERE email = ?;";
 
     if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -536,12 +536,32 @@ std::string Database::getUserNameByEmail(const std::string& email) {
 
     std::string name;
     if (sqlite3_step(stmt) == SQLITE_ROW) {
-        name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
     }
 
     sqlite3_finalize(stmt);
 
     return name;
+}
+
+int Database::getUserIdByEmail(const std::string &email) {
+    sqlite3_stmt *stmt;
+    std::string query = "SELECT entity_id FROM entities WHERE email = ?;";
+
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return -1;
+    }
+    int userId = -1;
+    sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        userId = sqlite3_column_int(stmt, 0);
+    }
+
+    sqlite3_finalize(stmt);
+
+    return userId;
 }
 
 std::string Database::getPassengerName(int passenger_id) {
@@ -559,3 +579,24 @@ std::string Database::getPassengerName(int passenger_id) {
     return name;
 }
 
+std::vector<std::string> Database::readAllPassengers() {
+    std::vector<std::string> passengers;
+    const char *query = "SELECT entity_id, name, email FROM entities;";
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to fetch passengers: " << sqlite3_errmsg(db) << std::endl;
+        return passengers;
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int entity_id = sqlite3_column_int(stmt, 0);
+        std::string name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        std::string email = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+
+        passengers.push_back("ID: " + std::to_string(entity_id) + ", Name: " + name + ", Email: " + email);
+    }
+
+    sqlite3_finalize(stmt);
+    return passengers;
+}
