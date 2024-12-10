@@ -16,23 +16,7 @@
 int main() {
     System system;
 
-    switch (system.login()) {
-        case 1: {
-            Admin admin;
-            admin.start();
-            break;
-        }
-
-        case 2: {
-            //User user;
-           // user.start();
-            break;
-        }
-
-        case 0: {
-            return 0;
-        }
-    }
+    system.login();
 }
 
 //end:snippet_1

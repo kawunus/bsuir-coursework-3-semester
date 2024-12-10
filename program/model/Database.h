@@ -78,6 +78,12 @@ public:
     int login(const std::string &email, const std::string &password);
 
     bool registerUser(const std::string &name, const std::string &email, const std::string &password);
+
+    bool getUserByEmail(const std::string &email);
+
+    bool isAdmin(const std::string &email);
+
+    std::string getUserNameByEmail(const std::string &email);
 };
 
 #endif // DATABASE_H

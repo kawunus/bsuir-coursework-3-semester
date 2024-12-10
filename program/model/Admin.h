@@ -11,7 +11,9 @@
 
 class Admin : public Entity {
 private:
-    std::string name = "admin";
+
+    std::string name;
+    int userId;
 
     void printStationsMenu() override;
 
@@ -57,6 +59,8 @@ private:
 
 public:
     void start();
+
+    Admin(std::string name, int userId);
 };
 
 #endif // ADMIN_H

@@ -473,3 +473,68 @@ bool Database::registerUser(const std::string &name, const std::string &email, c
     sqlite3_finalize(stmt);
     return true;
 }
+
+bool Database::isAdmin(const std::string& email) {
+    sqlite3_stmt* stmt;
+    std::string query = "SELECT is_admin FROM entities WHERE email = ?;";
+
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+
+    bool is_admin = false;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        is_admin = sqlite3_column_int(stmt, 0) == 1;
+    }
+
+    sqlite3_finalize(stmt);
+    return is_admin;
+}
+
+bool Database::getUserByEmail(const std::string& email) {
+    sqlite3_stmt* stmt;
+    std::string query = "SELECT entity_id, name, email, is_admin FROM entities WHERE email = ?;";
+
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+
+    bool user_found = false;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        user_found = true;
+        int entity_id = sqlite3_column_int(stmt, 0);
+        std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        std::string user_email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        bool is_admin = sqlite3_column_int(stmt, 3) == 1;
+    }
+
+    sqlite3_finalize(stmt);
+    return user_found;
+}
+
+std::string Database::getUserNameByEmail(const std::string& email) {
+    sqlite3_stmt* stmt;
+    std::string query = "SELECT name FROM entities WHERE email = ?;";
+
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return "";
+    }
+
+    sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+
+    std::string name;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+    }
+
+    sqlite3_finalize(stmt);
+
+    return name;
+}

@@ -1,4 +1,6 @@
 #include "../System.h"
+
+#include "../Admin.h"
 #include "../../Utils.h"
 
 void System::exit() {
@@ -38,6 +40,13 @@ int System::login() {
 
                     pressToContinue();
 
+                    if (db.isAdmin(email)) {
+                        Admin admin("test", userId);
+                        admin.start();
+                    } else {
+                        // TODO: USER
+                    }
+
                     return userId;
                 } else {
                     std::cout << "Invalid email or password. Try again." << std::endl;
@@ -61,7 +70,7 @@ int System::login() {
 
                     pressToContinue();
 
-                    return db.login(email, hashPassword(password));
+                    // TODO: USER
                 } else {
                     std::cout << "Registration failed. Email might already be in use." << std::endl;
                 }

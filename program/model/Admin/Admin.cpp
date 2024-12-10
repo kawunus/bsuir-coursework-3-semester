@@ -2,6 +2,13 @@
 
 #include "../../Utils.h"
 
+
+Admin::Admin(std::string name, int userId) {
+    this->name = name;
+    this->userId = userId;
+}
+
+
 void Admin::start() {
     std::cout << "Hi, " << name << "!" << std::endl;
 
