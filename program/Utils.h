@@ -12,5 +12,7 @@ void clearScreen();
 
 void pressToContinue();
 
-std::string hashPassword(const std::string& password);
+std::string hashPassword(const std::string &password);
+
+std::string getCurrentTime();
 #endif // UTILS_H
