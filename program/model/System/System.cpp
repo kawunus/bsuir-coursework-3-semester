@@ -35,6 +35,9 @@ int System::login() {
                 int userId = db.login(email, hashPassword(password));
                 if (userId != -1) {
                     std::cout << "Login successful! Your user ID is " << userId << "." << std::endl;
+
+                    pressToContinue();
+
                     return userId;
                 } else {
                     std::cout << "Invalid email or password. Try again." << std::endl;
@@ -54,8 +57,11 @@ int System::login() {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 if (db.registerUser(name, email, hashPassword(password))) {
-                    std::cout << "Registration successful! You can now login." << std::endl;
-                    cout << db.login(email, hashPassword(password));
+                    std::cout << "Registration successful!" << std::endl;
+
+                    pressToContinue();
+
+                    return db.login(email, hashPassword(password));
                 } else {
                     std::cout << "Registration failed. Email might already be in use." << std::endl;
                 }
@@ -68,6 +74,9 @@ int System::login() {
             }
             default: {
                 std::cout << "Invalid option. Please try again." << std::endl;
+
+                pressToContinue();
+
                 break;
             }
         }

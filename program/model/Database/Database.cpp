@@ -414,13 +414,11 @@ int Database::login(const std::string &email, const std::string &password) {
     sqlite3_stmt *stmt;
     std::string query = "SELECT entity_id, password FROM entities WHERE email = ?";
 
-    // Подготовка SQL-запроса
     if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << std::endl;
         return -1;
     }
 
-    // Привязка email к запросу
     if (sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC) != SQLITE_OK) {
         std::cerr << "Ошибка связывания email: " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
@@ -428,19 +426,14 @@ int Database::login(const std::string &email, const std::string &password) {
     }
 
     int userId = -1;
-    std::string hashedPassword = hashPassword(password); // Хэшируем введённый пароль
 
-    // Шаг выполнения запроса
     if (sqlite3_step(stmt) == SQLITE_ROW) {
-        int dbId = sqlite3_column_int(stmt, 0); // Получаем entity_id
-        const unsigned char *dbPassword = sqlite3_column_text(stmt, 1); // Получаем пароль из базы данных
-
+        int dbId = sqlite3_column_int(stmt, 0);
+        const unsigned char *dbPassword = sqlite3_column_text(stmt, 1);
         if (dbPassword) {
             std::string dbPasswordStr(reinterpret_cast<const char *>(dbPassword));
-            // Преобразуем пароль из базы в строку
             if (password == dbPasswordStr) {
-                // Сравниваем хэш пароля
-                userId = dbId; // Если пароли совпали, сохраняем id пользователя
+                userId = dbId;
             } else {
                 std::cerr << "\nПароль не совпадает!" << std::endl;
             }
@@ -450,7 +443,7 @@ int Database::login(const std::string &email, const std::string &password) {
     }
 
     sqlite3_finalize(stmt);
-    return userId; // Если нашли, возвращаем userId, иначе -1
+    return userId;
 }
 
 
