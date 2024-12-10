@@ -64,6 +64,7 @@ void User::start() {
 }
 
 void User::createTicketMenu() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     clearScreen();
     std::cout << "=============================" << std::endl;
     std::cout << "      Create Ticket          " << std::endl;
@@ -179,4 +180,26 @@ void User::printTicketsMenu() {
 }
 
 void User::readTicketsMenu() {
+    clearScreen();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "=============================" << std::endl;
+    std::cout << "      Show Tickets           " << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    std::cout << "Your Tickets:\n";
+    auto tickets = db.getTicketsByUserId(userId);
+    if (tickets.empty()) {
+        std::cout << "You have no tickets.\n";
+        pressToContinue();
+        return;
+    }
+
+    for (const auto &ticket: tickets) {
+        std::cout << "Ticket ID: " << std::get<0>(ticket)
+                << ", Route: " << std::get<1>(ticket)
+                << ", Place: " << std::get<2>(ticket)
+                << ", Purchase Time: " << std::get<3>(ticket) << '\n';
+    }
+
+    pressToContinue();
 }
