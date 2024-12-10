@@ -65,7 +65,7 @@ public:
 
     bool stationExists(int station_id);
 
-    int createTicket(int place_id, int route_id, const std::string &passenger_name, const std::string &purchase_time);
+    int createTicket(int place_id, int route_id, int passenger_id, const std::string &purchase_time);
 
     int deleteTicket(int ticket_id);
 
@@ -84,6 +84,8 @@ public:
     bool isAdmin(const std::string &email);
 
     std::string getUserNameByEmail(const std::string &email);
+
+    std::string getPassengerName(int passenger_id);
 };
 
 #endif // DATABASE_H

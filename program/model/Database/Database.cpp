@@ -323,15 +323,15 @@ bool Database::stationExists(int station_id) {
     return exists;
 }
 
-int Database::createTicket(int place_id, int route_id, const std::string &passenger_name,
-                           const std::string &purchase_time) {
-    std::string query = "INSERT INTO tickets (place_id, route_id, passenger_name, purchase_time) VALUES ("
+int Database::createTicket(int place_id, int route_id, int passenger_id, const std::string &purchase_time) {
+    std::string query = "INSERT INTO tickets (place_id, route_id, passenger_id, purchase_time) VALUES ("
                         + std::to_string(place_id) + ", "
-                        + std::to_string(route_id) + ", '"
-                        + passenger_name + "', '"
+                        + std::to_string(route_id) + ", "
+                        + std::to_string(passenger_id) + ", '"
                         + purchase_time + "');";
     return executeQuery(query);
 }
+
 
 int Database::deleteTicket(int ticket_id) {
     std::string query = "DELETE FROM tickets WHERE ticket_id = " + std::to_string(ticket_id) + ";";
@@ -340,23 +340,28 @@ int Database::deleteTicket(int ticket_id) {
 
 std::vector<std::string> Database::readTickets() {
     std::vector<std::string> tickets;
-    const char *query = "SELECT ticket_id, passenger_name, purchase_time, place_id, route_id FROM tickets;";
+    const char *query = "SELECT ticket_id, passenger_id, purchase_time, place_id, route_id FROM tickets;";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Failed to fetch tickets: " << sqlite3_errmsg(db) << std::endl;
         return tickets;
     }
+
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         int ticket_id = sqlite3_column_int(stmt, 0);
-        std::string passenger_name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        int passenger_id = sqlite3_column_int(stmt, 1);
         std::string purchase_time = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
         int place_id = sqlite3_column_int(stmt, 3);
         int route_id = sqlite3_column_int(stmt, 4);
+
+        // Получаем имя пассажира по его passenger_id
+        std::string passenger_name = getPassengerName(passenger_id);
 
         tickets.push_back("Ticket ID: " + std::to_string(ticket_id) + ", Passenger: " + passenger_name +
                           ", Purchase Time: " + purchase_time + ", Place ID: " + std::to_string(place_id) +
                           ", Route ID: " + std::to_string(route_id));
     }
+
     sqlite3_finalize(stmt);
     return tickets;
 }
@@ -538,3 +543,19 @@ std::string Database::getUserNameByEmail(const std::string& email) {
 
     return name;
 }
+
+std::string Database::getPassengerName(int passenger_id) {
+    std::string name;
+    std::string query = "SELECT name FROM entities WHERE entity_id = " + std::to_string(passenger_id) + ";";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to fetch passenger name: " << sqlite3_errmsg(db) << std::endl;
+        return name;
+    }
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+    }
+    sqlite3_finalize(stmt);
+    return name;
+}
+
