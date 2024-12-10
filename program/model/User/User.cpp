@@ -38,7 +38,14 @@ void User::start() {
             }
 
             case 1: {
+                clearScreen();
                 createTicketMenu();
+                break;
+            }
+
+            case 2: {
+                clearScreen();
+                readTicketsMenu();
                 break;
             }
 
@@ -47,6 +54,7 @@ void User::start() {
                 break;
             }
             default: {
+                clearScreen();
                 std::cout << "Invalid choice." << std::endl;
                 pressToContinue();
                 break;
