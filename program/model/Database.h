@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../Utils.h"
 
 using namespace std;
 
@@ -64,11 +65,19 @@ public:
 
     bool stationExists(int station_id);
 
-    int createTicket(int place_id, int route_id, const std::string& passenger_name, const std::string& purchase_time);
+    int createTicket(int place_id, int route_id, const std::string &passenger_name, const std::string &purchase_time);
+
     int deleteTicket(int ticket_id);
+
     std::vector<std::string> readTickets();
+
     std::vector<std::string> getAvailablePlaces(int route_id);
+
     std::vector<std::string> getRoutes();
+
+    int login(const std::string &email, const std::string &password);
+
+    bool registerUser(const std::string &name, const std::string &email, const std::string &password);
 };
 
 #endif // DATABASE_H

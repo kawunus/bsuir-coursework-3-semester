@@ -7,35 +7,78 @@ void System::exit() {
 }
 
 int System::login() {
+    if (!db.openDatabase(dbName)) {
+        std::cerr << "Failed to open the database. Terminating." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    clearScreen();
+
     while (isWork) {
         printLoginMenu();
         int command;
         std::cin >> command;
         handleInvalidInput();
+
         switch (command) {
             case 1: {
-                std::cout << "Enter a password: " << std::endl;
-                std::string password;
+                std::string email, password;
+                std::cout << "Enter email: ";
+                std::cin >> email;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                std::cout << "Enter password: ";
                 std::cin >> password;
-                if (password != "12345678") {
-                    std::cout << "Invalid password. Please, retry!" << std::endl;
-                } else return 1;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+                int userId = db.login(email, hashPassword(password));
+                if (userId != -1) {
+                    std::cout << "Login successful! Your user ID is " << userId << "." << std::endl;
+                    return userId;
+                } else {
+                    std::cout << "Invalid email or password. Try again." << std::endl;
+                }
                 break;
             }
-            case 2: return 2;
-            case 0: return 0;
+            case 2: {
+                std::string name, email, password;
+                std::cout << "Enter your name: ";
+                std::cin >> name;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Enter your email: ";
+                std::cin >> email;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Enter your password: ";
+                std::cin >> password;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                if (db.registerUser(name, email, hashPassword(password))) {
+                    std::cout << "Registration successful! You can now login." << std::endl;
+                    cout << db.login(email, hashPassword(password));
+                } else {
+                    std::cout << "Registration failed. Email might already be in use." << std::endl;
+                }
+                break;
+            }
+            case 0: {
+                isWork = false;
+                std::cout << "Exiting the system. Goodbye!" << std::endl;
+                break;
+            }
             default: {
-                std::cout << "Invalid command. Please, try again." << std::endl;
+                std::cout << "Invalid option. Please try again." << std::endl;
                 break;
             }
         }
     }
+    return -1;
 }
 
 void System::printLoginMenu() {
-    std::cout << "Who will be using the system today?" << std::endl;
-    std::cout << "1. Admin" << std::endl;
-    std::cout << "2. User" << std::endl;
-    std::cout << "0. Exit the program" << std::endl;
-    std::cout << "Enter the number for your choice" << std::endl;
+    std::cout << "======= Login Menu =======" << std::endl;
+    std::cout << "1. Login" << std::endl;
+    std::cout << "2. Register" << std::endl;
+    std::cout << "0. Exit" << std::endl;
+    std::cout << "Select an option: ";
 }

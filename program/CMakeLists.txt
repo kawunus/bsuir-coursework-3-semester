@@ -17,8 +17,9 @@ add_executable(code main.cpp
         model/User.h
         model/User/User.cpp)
 
-# Добавляем SQLite3
 find_package(SQLite3 REQUIRED)
 include_directories(${SQLite3_INCLUDE_DIRS})
 link_libraries(${SQLite3_LIBRARIES})
 target_link_libraries(code SQLite::SQLite3)
+find_package(OpenSSL REQUIRED)
+target_link_libraries(code sqlite3 OpenSSL::SSL OpenSSL::Crypto)

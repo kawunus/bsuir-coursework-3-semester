@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "Entity.h"
+#include "../Utils.h"
 
 class User : public Entity {
 public:

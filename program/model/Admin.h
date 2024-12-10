@@ -41,14 +41,6 @@ private:
 
     void printPlacesMenu() override;
 
-    void readPlaces();
-
-    void createPlace();
-
-    void deletePlace();
-
-    //void updatePlaceStatus();
-
     // TODO: Зарефакторить!
 
     void printRoutesMenu();
