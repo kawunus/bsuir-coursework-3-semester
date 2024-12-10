@@ -36,11 +36,73 @@ void User::start() {
                 exit();
                 break;
             }
+
+            case 1: {
+                createTicketMenu();
+                break;
+            }
         }
     }
 }
 
 void User::createTicketMenu() {
+    clearScreen();
+    std::cout << "=============================" << std::endl;
+    std::cout << "      Create Ticket          " << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    std::cout << "Available Routes:\n";
+    auto routes = db.getRoutes();
+    if (routes.empty()) {
+        std::cout << "No available routes.\n";
+        return;
+    }
+
+    for (const auto &route: routes) {
+        std::cout << route << '\n';
+    }
+
+    int route_id;
+    std::cout << "Enter Route ID: ";
+    std::cin >> route_id;
+
+    auto places = db.getAvailablePlaces(route_id);
+    if (places.empty()) {
+        std::cout << "No available places for this route.\n";
+        pressToContinue();
+        return;
+    }
+
+    std::cout << "Available Places:\n";
+    for (const auto &place: places) {
+        std::cout << place << '\n';
+    }
+
+    int place_id;
+    std::cout << "Enter Place ID: ";
+    std::cin >> place_id;
+
+    auto passengers = db.readAllPassengers();
+    if (passengers.empty()) {
+        std::cout << "No passengers found.\n";
+        pressToContinue();
+        return;
+    }
+
+    std::cout << "Available Passengers:\n";
+    for (const auto &passenger: passengers) {
+        std::cout << passenger << '\n';
+    }
+
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+    if (db.createTicket(place_id, route_id, userId, getCurrentTime()) == SQLITE_OK) {
+        std::cout << "Ticket created successfully.\n";
+    } else {
+        std::cout << "Failed to create ticket.\n";
+    }
 }
 
 void User::deleteTicketMenu() {
