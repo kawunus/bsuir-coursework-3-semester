@@ -1,0 +1,17 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{Введение}{4}{section*.1}%
+\contentsline {section}{\numberline {1}Анализ технического задания на курсовое проектирование}{5}{section.0.1}%
+\contentsline {subsection}{\numberline {1.1}Анализ предметной области}{5}{subsection.0.1.1}%
+\contentsline {subsection}{\numberline {1.2}Обзор систем-аналогов}{6}{subsection.0.1.2}%
+\contentsline {subsection}{\numberline {1.3}Постановка задачи на курсовое проектирование}{9}{subsection.0.1.3}%
+\contentsline {section}{\numberline {2}Проектирование информационной системы вокзала}{11}{section.0.2}%
+\contentsline {subsection}{\numberline {2.1}Разработка функционала системы}{11}{subsection.0.2.1}%
+\contentsline {subsection}{\numberline {2.2}Разработка иерархии классов}{12}{subsection.0.2.2}%
+\contentsline {subsection}{\numberline {2.3}Хранение данных}{13}{subsection.0.2.3}%
+\contentsline {section}{\numberline {3}Реализация информационной системы}{16}{section.0.3}%
+\contentsline {subsection}{\numberline {3.1}Описание работы системы}{16}{subsection.0.3.1}%
+\contentsline {section}{Заключение}{29}{section*.32}%
+\contentsline {section}{Cписок использованных источников}{30}{section*.33}%
+\contentsline {section}{Приложение А (обязательное) Фрагмент исходного кода приложения}{31}{section*.34}%
+\contentsline {section}{Приложение Б (обязательное) Блок-схема алгоритма входа в приложение}{44}{section*.35}%
+\contentsline {section}{Ведомость курсовой работы}{46}{section*.36}%
