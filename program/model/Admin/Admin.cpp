@@ -267,9 +267,6 @@ void Admin::readTrains() {
         }
     }
     std::cout << "=============================\n" << std::endl;
-
-
-    pressToContinue();
 }
 
 void Admin::printTrainsMenu() {
@@ -301,6 +298,7 @@ void Admin::printTrainsMenu() {
         }
         case 3: {
             readTrains();
+            pressToContinue();
             break;
         }
         case 0: {
@@ -700,14 +698,25 @@ void Admin::printRoutesMenu() {
                     pressToContinue();
                     break;
                 }
+
+                std::cout << "===========================" << std::endl;
+                std::cout << " Available Routes:        " << std::endl;
+                std::cout << "===========================" << std::endl;
+                for (const auto &route: routes) {
+                    std::cout << route << "\n";
+                }
+
+
                 std::cout << "Enter Route ID to delete: ";
                 int route_id;
                 std::cin >> route_id;
 
                 if (db.deleteRoute(route_id) == SQLITE_OK) {
                     std::cout << "Route deleted successfully.\n";
+                    pressToContinue();
                 } else {
                     std::cout << "Error deleting route.\n";
+                    pressToContinue();
                 }
                 pressToContinue();
                 break;
@@ -828,7 +837,7 @@ void Admin::createTicketMenu() {
     }
 
     std::cout << "Available Passengers:\n";
-    for (const auto &passenger : passengers) {
+    for (const auto &passenger: passengers) {
         std::cout << passenger << '\n';
     }
 

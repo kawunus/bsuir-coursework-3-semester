@@ -340,7 +340,16 @@ int Database::deleteTicket(int ticket_id) {
 
 std::vector<std::string> Database::readTickets() {
     std::vector<std::string> tickets;
-    const char *query = "SELECT ticket_id, passenger_id, purchase_time, place_id, route_id FROM tickets;";
+    const char *query = R"(
+        SELECT t.ticket_id, t.passenger_id, t.purchase_time, t.place_id,
+               r.route_id, start_station.name AS start_station_name,
+               end_station.name AS end_station_name
+        FROM tickets t
+        JOIN routes r ON t.route_id = r.route_id
+        JOIN stations start_station ON r.start_station_id = start_station.station_id
+        JOIN stations end_station ON r.end_station_id = end_station.station_id;
+    )";
+
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Failed to fetch tickets: " << sqlite3_errmsg(db) << std::endl;
@@ -353,18 +362,22 @@ std::vector<std::string> Database::readTickets() {
         std::string purchase_time = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
         int place_id = sqlite3_column_int(stmt, 3);
         int route_id = sqlite3_column_int(stmt, 4);
+        std::string start_station_name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
+        std::string end_station_name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 6));
 
         // Получаем имя пассажира по его passenger_id
         std::string passenger_name = getPassengerName(passenger_id);
 
         tickets.push_back("Ticket ID: " + std::to_string(ticket_id) + ", Passenger: " + passenger_name +
                           ", Purchase Time: " + purchase_time + ", Place ID: " + std::to_string(place_id) +
-                          ", Route ID: " + std::to_string(route_id));
+                          ", Route ID: " + std::to_string(route_id) +
+                          ", From: " + start_station_name + " To: " + end_station_name);
     }
 
     sqlite3_finalize(stmt);
     return tickets;
 }
+
 
 std::vector<std::string> Database::getAvailablePlaces(int route_id) {
     std::vector<std::string> places;
@@ -392,28 +405,41 @@ std::vector<std::string> Database::getAvailablePlaces(int route_id) {
 std::vector<std::string> Database::getRoutes() {
     std::vector<std::string> routes;
     const char *query =
-            "SELECT route_id, train_id, start_station_id, end_station_id, departure_time, arrival_time FROM routes;";
+        R"(
+        SELECT r.route_id, r.train_id,
+               s1.name AS start_station,
+               s2.name AS end_station,
+               r.departure_time, r.arrival_time
+        FROM routes r
+        JOIN stations s1 ON r.start_station_id = s1.station_id
+        JOIN stations s2 ON r.end_station_id = s2.station_id;
+        )";
+
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Failed to fetch routes: " << sqlite3_errmsg(db) << std::endl;
         return routes;
     }
+
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         int route_id = sqlite3_column_int(stmt, 0);
         int train_id = sqlite3_column_int(stmt, 1);
-        int start_station_id = sqlite3_column_int(stmt, 2);
-        int end_station_id = sqlite3_column_int(stmt, 3);
+        std::string start_station = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        std::string end_station = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
         std::string departure_time = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
         std::string arrival_time = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
 
-        routes.push_back("Route ID: " + std::to_string(route_id) + ", Train ID: " + std::to_string(train_id) +
-                         ", Start Station: " + std::to_string(start_station_id) +
-                         ", End Station: " + std::to_string(end_station_id) +
-                         ", Departure: " + departure_time + ", Arrival: " + arrival_time);
+        routes.push_back("Route ID: " + std::to_string(route_id) +
+                         ", Train ID: " + std::to_string(train_id) +
+                         ", Start Station: " + start_station +
+                         ", End Station: " + end_station +
+                         ", Departure: " + departure_time +
+                         ", Arrival: " + arrival_time);
     }
     sqlite3_finalize(stmt);
     return routes;
 }
+
 
 int Database::login(const std::string &email, const std::string &password) {
     sqlite3_stmt *stmt;
@@ -470,7 +496,7 @@ bool Database::registerUser(const std::string &name, const std::string &email, c
     }
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
-        std::cerr << "Ошибка выполнения запроса: " << sqlite3_errmsg(db) << std::endl;
+       // std::cerr << "Ошибка выполнения запроса: " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
         return false;
     }

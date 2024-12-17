@@ -64,26 +64,26 @@ int System::login() {
                 std::cout << "Enter your name: ";
                 std::cin >> name;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                clearScreen();
+                //  clearScreen();
                 std::cout << "Enter your email: ";
                 std::cin >> email;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                clearScreen();
+                //  clearScreen();
                 std::cout << "Enter your password: ";
                 std::cin >> password;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                clearScreen();
+                //   clearScreen();
 
                 if (db.registerUser(name, email, hashPassword(password))) {
-                    std::cout << "Registration successful!" << std::endl;
+                    std::cout << "\nRegistration successful!" << std::endl;
 
                     pressToContinue();
 
                     User user(db.getUserNameByEmail(email), db.getUserIdByEmail(email));
                     user.start();
                 } else {
-                    clearScreen();
-                    std::cout << "Registration failed. Email might already be in use." << std::endl;
+                   // clearScreen();
+                    std::cout << "\nRegistration failed. Email might already be in use." << std::endl;
                     pressToContinue();
                 }
                 break;
